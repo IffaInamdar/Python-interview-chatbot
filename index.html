@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="ÜTF-8"/>
+        <meta name="'viewport" content="width=device-width,initial-scale=1.0"/>
+        <title>Python Interview Coach</title>
+
+  <style>
+
+    /* Reset default browser spacing */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Dark background for whole page */
+    body {
+      background-color: #0d0f14;
+      color: #e8eaf0;
+      font-family: monospace;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Left sidebar */
+    .sidebar {
+      width: 260px;
+      background-color: #13161e;
+      border-right: 1px solid #2a2f3e;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      color: #60a5fa;
+      font-size: 20px;
+    }
+
+    .sidebar h3 {
+      color: #6b7280;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
+
+    /* Sidebar buttons */
+    .sidebar button {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      margin-top: 4px;
+      background: transparent;
+      border: 1px solid #2a2f3e;
+      border-radius: 8px;
+      color: #9ca3af;
+      cursor: pointer;
+      text-align: left;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .sidebar button:hover {
+      background-color: #1a1e28;
+      color: #e8eaf0;
+      border-color: #3b82f6;
+    }
+
+    /* Right main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top bar */
+    .topbar {
+      padding: 14px 24px;
+      background-color: #13161e;
+      border-bottom: 1px solid #2a2f3e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    #levelBadge {
+      background-color: #1a2f1a;
+      color: #22c55e;
+      border: 1px solid #22c55e44;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    /* Chat messages area */
+    .chatWindow {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Individual message bubble */
+    .message {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    /* User message — right side, blue */
+    .message.user {
+      align-self: flex-end;
+      background-color: rgba(59,130,246,0.15);
+      border: 1px solid #3b82f6;
+      color: #60a5fa;
+    }
+
+    /* Bot message — left side, dark */
+    .message.bot {
+      align-self: flex-start;
+      background-color: #13161e;
+      border: 1px solid #2a2f3e;
+      color: #e8eaf0;
+    }
+
+    /* Input row at the bottom */
+    .inputArea {
+      padding: 16px 24px;
+      border-top: 1px solid #2a2f3e;
+      background-color: #13161e;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    textarea {
+      flex: 1;
+      background-color: #1a1e28;
+      border: 1px solid #2a2f3e;
+      border-radius: 8px;
+      color: #e8eaf0;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 10px 14px;
+      resize: none;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #3b82f6;
+    }
+
+    .inputArea button {
+      padding: 10px 20px;
+      background-color: #3b82f6;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .inputArea button:hover {
+      background-color: #60a5fa;
+    }
+
+  </style>
+    </head>
+    <body>
+        <h1>Python Interview Coach</h1>
+
+  <!-- Sidebar on the left -->
+  <div class="sidebar">
+    <h2>🐍 PyCoach</h2>
+    <p>Python Interview Prep</p>
+
+    <h3>Difficulty</h3>
+    <button onclick="setLevel('basic')">Basic</button>
+    <button onclick="setLevel('intermediate')">Intermediate</button>
+    <button onclick="setLevel('advanced')">Advanced</button>
+
+    <h3>Topics</h3>
+    <div id="topicList">
+      <button onclick="askQuestion('What is a decorator?')">Decorators</button>
+      <button onclick="askQuestion('Explain generators')">Generators</button>
+      <button onclick="askQuestion('What is the GIL?')">The GIL</button>
+      <button onclick="askQuestion('How does asyncio work?')">Asyncio</button>
+      <button onclick="askQuestion('What are list comprehensions?')">List Comprehensions</button>
+    </div>
+
+    <button onclick="pickRandom()">🎲 Random Question</button>
+  </div>
+
+  <!-- Chat area on the right -->
+  <div class="main">
+
+    <!-- Top bar showing current question -->
+    <div class="topbar">
+      <span id="currentQuestion">Select a topic or ask anything</span>
+      <span id="levelBadge">Basic</span>
+    </div>
+
+    <!-- Messages appear here -->
+    <div class="chatWindow" id="chatWindow">
+      <p id="emptyMsg">👋 Pick a topic from the left or type your question below!</p>
+    </div>
+
+    <!-- Input at the bottom -->
+    <div class="inputArea">
+      <textarea id="inputBox" placeholder="Ask a Python question..." rows="2"></textarea>
+      <button onclick="sendMessage()">Send ➤</button>
+    </div>
+
+  </div>
+  <script>
+
+  // Track the current level
+  let currentLevel = 'basic';
+  let currentQuestion = '';
+
+  // Change difficulty level
+  function setLevel(level) {
+    currentLevel = level;
+    document.getElementById('levelBadge').textContent =
+      level.charAt(0).toUpperCase() + level.slice(1);
+  }
+
+  // Add a message bubble to the chat
+  function addMessage(text, role) {
+    // Hide the empty message if visible
+    const empty = document.getElementById('emptyMsg');
+    if (empty) empty.remove();
+
+    const chat = document.getElementById('chatWindow');
+
+    const div = document.createElement('div');
+    div.className = 'message ' + role;
+    div.textContent = text;
+
+    chat.appendChild(div);
+
+    // Auto scroll to bottom
+    chat.scrollTop = chat.scrollHeight;
+
+    return div;
+  }
+
+  // Ask a question and stream the answer from backend
+  async function askQuestion(question) {
+    currentQuestion = question;
+    document.getElementById('currentQuestion').textContent = question;
+
+    // Show the user's question
+    addMessage(question, 'user');
+
+    // Create an empty bot bubble that will fill up
+    const botBubble = addMessage('...', 'bot');
+
+    try {
+      // Call your FastAPI backend
+      const response = await fetch('http://localhost:8000/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: question,
+          level: currentLevel
+        })
+      });
+
+      // Read streaming response token by token
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+
+      botBubble.textContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        fullText += decoder.decode(value, { stream: true });
+        botBubble.textContent = fullText;
+        // Keep scrolling as text arrives
+        document.getElementById('chatWindow').scrollTop =
+          document.getElementById('chatWindow').scrollHeight;
+      }
+
+    } catch (error) {
+      botBubble.textContent =
+        '⚠ Cannot connect to backend. Start uvicorn first!';
+      botBubble.style.color = '#ef4444';
+    }
+  }
+
+  // Send button / Enter key handler
+  function sendMessage() {
+    const input = document.getElementById('inputBox');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    askQuestion(text);
+  }
+
+  // Allow Enter key to send (Shift+Enter = new line)
+  document.getElementById('inputBox').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Pick a random question from the backend
+  async function pickRandom() {
+    try {
+      const res = await fetch(
+        `http://localhost:8000/questions?level=${currentLevel}&random_pick=true`
+      );
+      const data = await res.json();
+      askQuestion(data.question);
+    } catch {
+      askQuestion('What is a Python decorator?');
+    }
+  }
+
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,20 @@
+json
+
+{
+    "basic": [
+        {"id": 1, "topic": "Variables", "question", "What is the difference between a list and a tuple"},
+        {"id": 2, "topic": "Functions", "Functions", "What are *args and **kwargs in Python?"},
+        {"id": 3, "topic": "OOP", "question": "What is a class in Python?"},
+        {"id": 4, "topic": "Loops", "question": "What is list comprehension?"},
+        {"id": 5, "topic": "Exceptions", "question": "How do you handle exceptions in Python?"}
+  ],
+  "intermediate": [
+    {"id": 6, "topic": "Decorators", "question": "What is a decorator and how does it work?"},
+    {"id": 7, "topic": "Generators", "question": "What is a generator? When would you use one?"},
+    {"id": 8, "topic": "OOP", "question": "What is multiple inheritance and MRO in Python?"}
+  ],
+  "advanced": [
+    {"id": 9, "topic": "Async", "question": "Explain asyncio and event loops in Python."},
+    {"id": 10, "topic": "Metaclasses", "question": "What is a metaclass in Python?"}
+  ]
+}
